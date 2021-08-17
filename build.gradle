@@ -13,8 +13,6 @@ sourceSets {
     integration {
         compileClasspath += main.output + test.output
         runtimeClasspath += main.output + test.output
-        java.srcDirs('./src/integration/groovy')
-        resources.srcDirs('./src/integration/resources')
     }
 }
 
@@ -24,8 +22,6 @@ task integrationTest(type: Test) {
     testClassesDirs = sourceSets.integration.output.classesDirs
     classpath = sourceSets.integration.runtimeClasspath
     outputs.upToDateWhen { false }
-    // This is not needed, but I like to see which tests have run
-    testLogging { events "passed", "skipped", "failed" }
 }
 
 tasks.withType(Test) {
@@ -52,8 +48,6 @@ dependencies {
     testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
     testImplementation 'org.spockframework:spock-spring:2.0-groovy-3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-test {
-    useJUnitPlatform()
+    testImplementation 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+    testImplementation 'com.h2database:h2'
 }
