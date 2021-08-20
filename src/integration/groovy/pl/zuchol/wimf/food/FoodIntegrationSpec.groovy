@@ -7,6 +7,7 @@ class FoodIntegrationSpec extends BasicIntegrationSpec {
 
     private static final String FOOD_NAME = 'food_name'
     private static final String SECOND_FOOD_NAME = 'second_food_name'
+    private static final String FOODS_PATH = '/foods/'
 
     def setup() {
         foodRepository.deleteAll();
@@ -18,7 +19,7 @@ class FoodIntegrationSpec extends BasicIntegrationSpec {
 
         when: 'Send request for creating food'
             def response = client.post(
-                    path : '/foods',
+                    path : FOODS_PATH,
                     body : requestBody,
                     requestContentType : 'application/json'
             )
@@ -37,7 +38,7 @@ class FoodIntegrationSpec extends BasicIntegrationSpec {
 
         when: "Send request for all"
             def response = client.get(
-                    path : '/foods/',
+                    path : FOODS_PATH,
                     requestContentType : 'application/json'
             )
 
@@ -54,7 +55,7 @@ class FoodIntegrationSpec extends BasicIntegrationSpec {
 
         when: "Send request for one by name "
             def response = client.get(
-                    path : '/foods/' + FOOD_NAME,
+                    path : FOODS_PATH + FOOD_NAME,
                     requestContentType : 'application/json'
             )
 
@@ -70,7 +71,7 @@ class FoodIntegrationSpec extends BasicIntegrationSpec {
 
         when: "Send request by name"
             client.get(
-                    path : '/foods/' + FOOD_NAME,
+                    path : FOODS_PATH + FOOD_NAME,
                     requestContentType : 'application/json'
             )
 
@@ -79,6 +80,22 @@ class FoodIntegrationSpec extends BasicIntegrationSpec {
             assert ex.statusCode == 404
             assert ex.response.data.getAt("code") == "FoodNotFoundException"
             assert ex.response.data.getAt("message") ==  "Food with name food_name not found"
+    }
+
+    def "should delete by name "() {
+        given: 'Saved foods'
+            createFood(FOOD_NAME)
+
+        when: "Send request for delete name "
+            def response = client.delete(
+                    path : FOODS_PATH + FOOD_NAME
+            )
+
+        then: 'Server returns 200 code (OK)'
+            assert response.status == 200
+
+        and: 'And there is no food in database'
+            assert foodRepository.count() == 0
     }
 
     private Object createFood(name) {
@@ -90,7 +107,7 @@ class FoodIntegrationSpec extends BasicIntegrationSpec {
                 ]
         ]
         return client.post(
-                path : '/foods',
+                path : FOODS_PATH,
                 body : requestBody,
                 requestContentType : 'application/json'
         )

@@ -1,6 +1,7 @@
 package pl.zuchol.wimf.food;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,12 @@ class FoodController {
                 .map(foodMapper::toDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(list, OK);
+    }
+
+    @DeleteMapping("/{foodName}")
+    public ResponseEntity<FoodDto> delete(@PathVariable String foodName) {
+        foodService.deleteFood(foodName);
+        return new ResponseEntity<>(OK);
     }
 
 }

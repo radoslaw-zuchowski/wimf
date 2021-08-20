@@ -8,4 +8,6 @@ import java.util.Optional;
 interface FoodRepository extends PagingAndSortingRepository<Food, String> {
 
     Optional<Food> findByName(String foodName);
+
+    void deleteByName(String foodName);
 }
