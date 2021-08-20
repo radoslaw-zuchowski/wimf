@@ -28,4 +28,8 @@ class FoodService {
     public List<Food> getAllFood() {
         return ImmutableList.copyOf(repository.findAll());
     }
+
+    public void deleteFood(String foodName) {
+        repository.deleteByName(foodName);
+    }
 }
